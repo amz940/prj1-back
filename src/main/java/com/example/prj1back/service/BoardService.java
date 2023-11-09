@@ -33,6 +33,6 @@ public class BoardService {
             return false;
         }
 
-        return false;
+        return true;
     }
 }
