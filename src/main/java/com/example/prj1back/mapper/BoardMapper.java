@@ -3,6 +3,9 @@ package com.example.prj1back.mapper;
 import com.example.prj1back.domain.Board;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 @Mapper
 public interface BoardMapper {
@@ -11,4 +14,11 @@ public interface BoardMapper {
             VALUES (#{title}, #{content}, #{writer})
             """)
     int insert(Board board);
+
+    @Select("""
+            SELECT id, title, writer, inserted
+            FROM board
+            ORDER BY id
+            """)
+    List<Board> selectAll();
 }
