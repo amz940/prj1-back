@@ -48,4 +48,12 @@ public class MemberService {
     public List<Member> list() {
         return mapper.selectAll();
     }
+
+    public Member getMember(String id) {
+        return mapper.selectById(id);
+    }
+
+    public boolean deleteMember(String id) {
+        return mapper.deleteById(id) == 1;
+    }
 }

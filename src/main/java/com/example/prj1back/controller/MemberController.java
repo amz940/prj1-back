@@ -42,15 +42,25 @@ public class MemberController {
     public List<Member> list(){
         return service.list();
     }
-    @GetMapping()
-    public void view(String id){
-        System.out.println("id = " + id);
-    }
 
     @GetMapping
     public ResponseEntity<Member> view(String id) {
+        // TODO : 로그인 했는지 검사 -> error 시 401
+        // TODO : 자기 정보인지? -> error 시 403
         Member member = service.getMember(id);
 
         return ResponseEntity.ok(member);
+    }
+
+    @DeleteMapping
+    public ResponseEntity delete(String id){
+        // TODO : 로그인 했는지 검사 -> error 시 401
+        // TODO : 자기 정보인지? -> error 시 403
+
+        if (service.deleteMember(id)){
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.internalServerError().build();
+        }
     }
 }
