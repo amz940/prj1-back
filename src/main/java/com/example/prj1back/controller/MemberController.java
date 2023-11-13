@@ -8,23 +8,16 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/member")
 public class MemberController {
-    private final MemberService service;
+    private  final MemberService service;
 
     @PostMapping("signup")
-    public ResponseEntity signup(@RequestBody Member member) {
-        if (service.validate(member)) {
-            if (service.add(member)) {
-                return ResponseEntity.ok().build();
-            } else {
-                return ResponseEntity.internalServerError().build();
-            }
-        } else {
-            return ResponseEntity.badRequest().build();
-        }
+    public void signup(@RequestBody Member member) {
+        service.add(member);
     }
 
     @GetMapping(value = "check", params = "id")
@@ -37,8 +30,8 @@ public class MemberController {
     }
 
     @GetMapping(value = "check", params = "email")
-    public ResponseEntity checkEmail(String email) {
-        if (service.getEmail(email) == null) {
+    public ResponseEntity checkEmail(String email){
+        if (service.getEmail(email) == null){
             return ResponseEntity.notFound().build();
         } else {
             return ResponseEntity.ok().build();
@@ -46,7 +39,11 @@ public class MemberController {
     }
 
     @GetMapping("list")
-    public List<Member> list() {
+    public List<Member> list(){
         return service.list();
+    }
+    @GetMapping()
+    public void view(String id){
+        System.out.println("id = " + id);
     }
 }
