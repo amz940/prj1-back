@@ -62,16 +62,4 @@ public class BoardController {
         }
     }
 
-    @PutMapping("edit")
-    public ResponseEntity Edit(@RequestBody Board board){
-        if (service.validate(board)) {
-            if (service.update(board)) {
-                return ResponseEntity.ok().build();
-            } else {
-                return ResponseEntity.internalServerError().build();
-            }
-        } else {
-            return ResponseEntity.badRequest().build();
-        }
-    }
 }
