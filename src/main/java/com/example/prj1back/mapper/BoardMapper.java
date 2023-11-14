@@ -16,7 +16,8 @@ public interface BoardMapper {
     @Select("""
             SELECT b.id,
             b.title,
-            m.nickName `writer`,
+            b.writer,
+            m.nickName,
             b.inserted
             FROM board b JOIN member m ON b.writer = m.id
             ORDER BY b.id DESC
@@ -27,7 +28,8 @@ public interface BoardMapper {
             SELECT b.id,
             b.title,
             b.content,
-            m.nickName `writer`,
+            b.writer,
+            m.nickName,
             b.inserted
             FROM board b JOIN member m ON b.writer = m.id
             WHERE b.id = #{id}
