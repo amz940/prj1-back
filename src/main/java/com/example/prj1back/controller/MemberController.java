@@ -65,7 +65,16 @@ public class MemberController {
     }
 
     @DeleteMapping
-    public ResponseEntity delete(String id){
+    public ResponseEntity delete(String id,
+                                 @SessionAttribute(value = "login", required = false)Member login){
+        if (login == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); // 401
+        }
+
+        if (!service.hasAccess(id, login)){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build(); // 403
+        }
+
         // TODO : 로그인 했는지 검사 -> error 시 401
         // TODO : 자기 정보인지? -> error 시 403
 
@@ -77,7 +86,16 @@ public class MemberController {
     }
 
     @PutMapping("edit")
-    public ResponseEntity edit(@RequestBody Member member){
+    public ResponseEntity edit(@RequestBody Member member,
+                               @SessionAttribute(value = "login", required = false) Member login){
+        if ( login == null){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        if (!service.hasAccess(member.getId(), login)){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
         // TODO : 로그인 했는지 ? 자기 정보 인지?
         if (service.update(member)) {
             return ResponseEntity.ok().build();
