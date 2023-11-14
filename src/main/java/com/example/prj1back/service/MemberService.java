@@ -1,6 +1,7 @@
 package com.example.prj1back.service;
 
 import com.example.prj1back.domain.Member;
+import com.example.prj1back.mapper.BoardMapper;
 import com.example.prj1back.mapper.MemberMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import java.util.List;
 public class MemberService {
 
     private final MemberMapper mapper;
+    private final BoardMapper boardMapper;
 
     public boolean add(Member member) {
         return mapper.insert(member) == 1;
@@ -60,6 +62,10 @@ public class MemberService {
     }
 
     public boolean deleteMember(String id) {
+        // 1. 이 멤버가 작성한 게시물 삭제
+        boardMapper.deleteByWriter(id);
+        // 2. 이 멤버 삭제
+
         return mapper.deleteById(id) == 1;
     }
 
