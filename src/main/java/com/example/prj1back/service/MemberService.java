@@ -28,6 +28,10 @@ public class MemberService {
 
     }
 
+    public String getNickName(String nickName) {
+        return mapper.selectNickName(nickName);
+    }
+
     public boolean validate(Member member) {
         if (member == null) {
             return false;
@@ -84,4 +88,6 @@ public class MemberService {
 
         return false;
     }
+
+
 }
