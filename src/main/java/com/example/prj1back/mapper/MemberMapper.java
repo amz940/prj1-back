@@ -1,5 +1,6 @@
 package com.example.prj1back.mapper;
 
+import com.example.prj1back.domain.Auth;
 import com.example.prj1back.domain.Member;
 import org.apache.ibatis.annotations.*;
 
@@ -66,5 +67,9 @@ public interface MemberMapper {
             """)
     int update(Member member);
 
-
+    @Select("""
+            SELECT * FROM auth
+            WHERE memberId = #{id}
+            """)
+    List<Auth> selectAuthById(String id);
 }

@@ -1,5 +1,6 @@
 package com.example.prj1back.service;
 
+import com.example.prj1back.domain.Auth;
 import com.example.prj1back.domain.Member;
 import com.example.prj1back.mapper.BoardMapper;
 import com.example.prj1back.mapper.MemberMapper;
@@ -82,8 +83,14 @@ public class MemberService {
     public boolean login(Member member, WebRequest request) {
         Member dbMember = mapper.selectById(member.getId());
 
+
+
         if (dbMember != null){
             if (dbMember.getPassword().equals(member.getPassword())){
+
+                List<Auth> auth = mapper.selectAuthById(member.getId());
+                dbMember.setAuth(auth);
+
                 dbMember.setPassword("");
 //                쿠키 생성 해주기
                 request.setAttribute("login", dbMember, RequestAttributes.SCOPE_SESSION);
