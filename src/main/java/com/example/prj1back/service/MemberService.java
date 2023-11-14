@@ -102,6 +102,20 @@ public class MemberService {
     }
 
     public boolean hasAccess(String id, Member login) {
+        if (isAdmin(login)){
+            return true;
+        }
+
         return login.getId().equals(id);
+    }
+    // admin이 있는 지 확인 해주는 코드
+    public boolean isAdmin(Member login){
+        if( login.getAuth() != null) {
+            return login.getAuth()
+                    .stream()
+                    .map(Auth::getName)
+                    .anyMatch(n -> n.equals("admin"));
+        }
+        return false;
     }
 }
