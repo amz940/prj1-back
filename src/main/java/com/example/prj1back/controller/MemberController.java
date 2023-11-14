@@ -2,6 +2,7 @@ package com.example.prj1back.controller;
 
 import com.example.prj1back.domain.Member;
 import com.example.prj1back.service.MemberService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -82,6 +83,14 @@ public class MemberController {
             return ResponseEntity.ok().build();
         } else{
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+    }
+
+    @PostMapping("logout")
+    // 무조건 실행 될 수 있게 코드 작성
+    public void logout(HttpSession session){
+        if (session != null){
+            session.invalidate();
         }
     }
 }
