@@ -20,42 +20,51 @@ public class BoardController {
 
     @PostMapping("add")
     public ResponseEntity add(@RequestBody Board board,
-                              @SessionAttribute(value = "login", required = false) Member login)   {
+                              @SessionAttribute(value = "login", required = false) Member login) {
 
-        if (login == null){
+        if (login == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        if (!service.validate(board)){
+        if (!service.validate(board)) {
             return ResponseEntity.badRequest().build();
         }
 
 
-       if (service.save(board, login)) {
-           ResponseEntity.ok().build();
-       } else {
-           return ResponseEntity.internalServerError().build();
-       }
+        if (service.save(board, login)) {
+            ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.internalServerError().build();
+        }
         return null;
     }
 
     @GetMapping("list")
-    public List<Board> list(){
+    public List<Board> list() {
         return service.list();
     }
 
     @GetMapping("id/{id}")
-    public Board get(@PathVariable Integer id){
+    public Board get(@PathVariable Integer id) {
         return service.get(id);
     }
 
     @DeleteMapping("remove/{id}")
-    public ResponseEntity remove(@PathVariable Integer id){
-       if (service.remove(id)){
-           return ResponseEntity.ok().build();
-       } else {
+    public ResponseEntity remove(@PathVariable Integer id,
+                                 @SessionAttribute(value = "login", required = false) Member login) {
+        if (login == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); // 로그 아웃 후 실행 시 401
+        }
+
+        if (!service.hasAccess(id, login)){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build(); // 따른 아이디로 삭제 할려 했을 때 403
+        }
+
+        if (service.remove(id)) {
+            return ResponseEntity.ok().build();
+        } else {
             return ResponseEntity.internalServerError().build();
-       }
+        }
     }
 
     @PutMapping("edit")

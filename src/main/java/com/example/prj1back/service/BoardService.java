@@ -52,4 +52,10 @@ public class BoardService {
     public boolean update(Board board) {
         return mapper.update(board) == 1;
     }
+
+    public boolean hasAccess(Integer id, Member login){
+        Board board = mapper.selectById(id);
+
+        return board.getWriter().equals(login.getId());
+    }
 }
