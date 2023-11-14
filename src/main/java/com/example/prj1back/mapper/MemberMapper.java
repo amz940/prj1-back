@@ -59,7 +59,7 @@ public interface MemberMapper {
             <if test="password != ''">
             password = #{password},
             </if>
-                email = #{email}
+                email = #{email},
                 nickName = #{nickName}
             WHERE id = #{id}
             </script>
