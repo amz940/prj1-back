@@ -128,4 +128,9 @@ public class MemberController {
             session.invalidate();
         }
     }
+
+    @GetMapping("login")
+    public Member login(@SessionAttribute(value = "login", required = false) Member login){
+        return login;
+    }
 }
