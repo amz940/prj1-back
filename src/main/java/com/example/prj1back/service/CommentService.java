@@ -20,13 +20,13 @@ public class CommentService {
     }
 
     public boolean validate(Comment comment) {
-        if (comment == null){
+        if (comment == null) {
             return false;
         }
-        if (comment.getBoardId() == null || comment.getBoardId() < 1){
+        if (comment.getBoardId() == null || comment.getBoardId() < 1) {
             return false;
         }
-        if (comment.getComment() == null || comment.getComment().isBlank()){
+        if (comment.getComment() == null || comment.getComment().isBlank()) {
             return false;
         }
         return true;
@@ -40,5 +40,9 @@ public class CommentService {
     public void remove(Integer id) {
 
         mapper.deleteById(id);
+    }
+
+    public boolean update(Comment comment) {
+        return mapper.update(comment) == 1;
     }
 }
