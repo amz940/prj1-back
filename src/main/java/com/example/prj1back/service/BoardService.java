@@ -4,6 +4,7 @@ import com.example.prj1back.domain.Auth;
 import com.example.prj1back.domain.Board;
 import com.example.prj1back.domain.Member;
 import com.example.prj1back.mapper.BoardMapper;
+import com.example.prj1back.mapper.CommentMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +14,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BoardService {
 
-    private final MemberService memberService;
+    private final CommentMapper commentMapper;
     private final BoardMapper mapper;
 
     public boolean save(Board board, Member login) {
@@ -56,7 +57,11 @@ public class BoardService {
     }
 
     public boolean hasAccess(Integer id, Member login){
-        if (memberService.isAdmin(login)){
+        if (login == null) {
+            return false;
+        }
+
+        if (login.isAdmin()){
             return true;
         }
 
