@@ -31,4 +31,10 @@ public interface CommentMapper {
             WHERE id = #{id}
             """)
     int update(Comment comment);
+
+    @Select("""
+        SELECT * FROM comment
+        WHERE id = #{id}
+        """)
+    Comment selectById(Integer id);
 }
