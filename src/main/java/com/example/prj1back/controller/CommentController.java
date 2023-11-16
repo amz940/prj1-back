@@ -21,6 +21,11 @@ public class CommentController {
     public ResponseEntity add(@RequestBody Comment comment,
                               @SessionAttribute(value = "login", required = false) Member login){
 
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         if (login == null){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
