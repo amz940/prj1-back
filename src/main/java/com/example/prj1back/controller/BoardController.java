@@ -39,9 +39,11 @@ public class BoardController {
         return null;
     }
 
+    // /api/board/list?p=?
+    // p = 현재 페이지, default는 기초 페이지
     @GetMapping("list")
-    public List<Board> list() {
-        return service.list();
+    public List<Board> list(@RequestParam(value = "p", defaultValue = "1") Integer page) {
+        return service.list(page);
     }
 
     @GetMapping("id/{id}")

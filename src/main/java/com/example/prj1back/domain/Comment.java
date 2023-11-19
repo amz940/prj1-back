@@ -1,5 +1,6 @@
 package com.example.prj1back.domain;
 
+import com.example.prj1back.utill.AppUtil;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -12,4 +13,8 @@ public class Comment {
     private String comment;
     private String memberNickName;
     private LocalDateTime inserted;
+
+    public String getAgo(){
+        return AppUtil.getAgo(inserted, LocalDateTime.now());
+    }
 }
