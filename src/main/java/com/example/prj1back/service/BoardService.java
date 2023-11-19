@@ -5,6 +5,7 @@ import com.example.prj1back.domain.Board;
 import com.example.prj1back.domain.Member;
 import com.example.prj1back.mapper.BoardMapper;
 import com.example.prj1back.mapper.CommentMapper;
+import com.example.prj1back.mapper.LikeMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,7 @@ import java.util.List;
 public class BoardService {
 
     private final CommentMapper commentMapper;
+    private final LikeMapper likeMapper;
     private final BoardMapper mapper;
 
     public boolean save(Board board, Member login) {
@@ -49,6 +51,11 @@ public class BoardService {
     }
 
     public boolean remove(Integer id) {
+        // 1. 게시물에 달린 댓글들 지우기
+            commentMapper.deleteByBoardId(id);
+        // 2. 좋아요 테이블 지우기
+            likeMapper.deleteByBoardId(id);
+
         return mapper.deleteById(id) == 1 ;
     }
 
