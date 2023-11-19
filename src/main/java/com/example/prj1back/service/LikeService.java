@@ -24,12 +24,24 @@ public class LikeService {
         int count = 0;
 
       if ( mapper.delete(like) == 0 ) {
-          mapper.insert(like);
+          count = mapper.insert(like);
       }
 
       int countLike = mapper.countByBoardId(like.getBoardId());
 
       return Map.of("like", count == 1,
               "countLike", countLike);
+    }
+
+    public Map<String, Object> get(Integer boardId, Member login) {
+        int countLike = mapper.countByBoardId(boardId);
+
+        Like like = null;
+
+        if ( login != null ){
+            like = mapper.selectByBoardIdAndMemberId(boardId, login.getId());
+        }
+
+        return Map.of("like",like != null, "countLike", countLike);
     }
 }
