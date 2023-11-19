@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -42,7 +43,7 @@ public class BoardController {
     // /api/board/list?p=?
     // p = 현재 페이지, default는 기초 페이지
     @GetMapping("list")
-    public List<Board> list(@RequestParam(value = "p", defaultValue = "1") Integer page) {
+    public Map<String, Object> list(@RequestParam(value = "p", defaultValue = "1") Integer page) {
         return service.list(page);
     }
 
