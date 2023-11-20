@@ -4,9 +4,11 @@ import com.example.prj1back.domain.Board;
 import com.example.prj1back.domain.Member;
 import com.example.prj1back.mapper.BoardMapper;
 import com.example.prj1back.mapper.CommentMapper;
+import com.example.prj1back.mapper.FileMapper;
 import com.example.prj1back.mapper.LikeMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,11 +20,25 @@ public class BoardService {
     private final CommentMapper commentMapper;
     private final LikeMapper likeMapper;
     private final BoardMapper mapper;
+    private final FileMapper fileMapper;
 
-    public boolean save(Board board, Member login) {
+    public boolean save(Board board, MultipartFile[] files, Member login) {
+        // 로그인한 사용자의 이름을 작성자로 바꾸는 코드
         board.setWriter(login.getId());
 
-        return mapper.insert(board) == 1 ;
+        int cnt = mapper.insert(board);
+
+        // boardFile 테이블에 files 정보 저장 코드
+        if (files != null){
+            for (int i = 0; i < files.length; i++) {
+                // 특정 파일 정보(boardId, name)만 입력
+                fileMapper.insert(board.getId(), files[i].getOriginalFilename());
+            }
+        }
+
+        // 실제 파일을 S3 bucket에 upload 하는 코드
+
+        return cnt == 1 ;
     }
 
 
