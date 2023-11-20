@@ -35,7 +35,7 @@ public class BoardService {
                 // 특정 파일 정보(boardId, name)만 입력
                 fileMapper.insert(board.getId(), files[i].getOriginalFilename());
                 // local에 저장
-                upload(files[i]);
+                upload(board.getId(), files[i]);
                 // 실제 파일을 S3 bucket에 upload 하는 코드
             }
         }
