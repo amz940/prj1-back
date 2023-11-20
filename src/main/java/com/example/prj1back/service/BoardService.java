@@ -19,6 +19,7 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -32,7 +33,9 @@ public class BoardService {
     private final FileMapper fileMapper;
     private final S3Client s3;
 
-    @Value("${aw3.s3.bucket.name}")
+    @Value("${image.file.prefix}")
+    private String urlPrefix;
+    @Value("${aws.s3.bucket.name}")
     private String bucket;
 
     public boolean save(Board board, MultipartFile[] files, Member login) throws IOException {
@@ -138,7 +141,17 @@ public class BoardService {
     }
 
     public Board get(Integer id) {
-        return mapper.selectById(id);
+        Board board = mapper.selectById(id);
+
+        List<String> fileNames = fileMapper.selectNamesByBoardId(id);
+
+        fileNames.stream()
+                .map(name -> urlPrefix + "prj14086" + id + name)
+                .toList();
+
+        board.setFileNames(fileNames);
+
+        return board;
     }
 
     public boolean remove(Integer id) {

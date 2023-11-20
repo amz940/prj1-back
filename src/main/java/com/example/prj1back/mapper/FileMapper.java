@@ -2,6 +2,9 @@ package com.example.prj1back.mapper;
 
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 @Mapper
 public interface FileMapper {
@@ -11,4 +14,12 @@ public interface FileMapper {
             VALUES (#{boardId}, #{name})
             """)
     int insert(Integer boardId, String name);
+
+    @Select("""
+            SELECT name
+            FROM boardfile
+            WHERE boardId = #{boardId}
+            """)
+    List<String> selectNamesByBoardId(Integer boardId);
+
 }
