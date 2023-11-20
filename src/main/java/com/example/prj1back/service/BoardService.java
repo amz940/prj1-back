@@ -60,7 +60,7 @@ public class BoardService {
     private void upload(Integer boardId, MultipartFile file) throws IOException {
         // 파일 저장 경로
         // aws에 저장하는 방법
-        String key = "prj14086/" + boardId + file.getOriginalFilename();
+        String key = "prj14086/" + boardId + "/" + file.getOriginalFilename();
         PutObjectRequest objectRequest = PutObjectRequest.builder()
                 .bucket(bucket)
                 .key(key)
@@ -145,8 +145,8 @@ public class BoardService {
 
         List<String> fileNames = fileMapper.selectNamesByBoardId(id);
 
-        fileNames.stream()
-                .map(name -> urlPrefix + "prj14086" + id + name)
+        fileNames = fileNames.stream()
+                .map(name -> urlPrefix + "prj14086/" + id + "/" + name)
                 .toList();
 
         board.setFileNames(fileNames);
