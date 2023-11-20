@@ -1,6 +1,5 @@
 package com.example.prj1back.service;
 
-import com.example.prj1back.domain.Auth;
 import com.example.prj1back.domain.Board;
 import com.example.prj1back.domain.Member;
 import com.example.prj1back.mapper.BoardMapper;
@@ -10,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Service
@@ -44,17 +42,21 @@ public class BoardService {
         return true;
     }
 
-    public Map<String, Object> list(Integer page) {
+    public Map<String, Object> list(Integer page, String keyword) {
         Map<String, Object> map = new HashMap<>();
         Map<String, Object> pageInfo = new HashMap<>();
 
         int countAll = mapper.countAll();
+
         int lastPageNumber = (countAll - 1) / 10 + 1;
         int startPageNumber = (page - 1) / 10 * 10 + 1;
         int endPageNumber = startPageNumber + 9;
+
         endPageNumber = Math.min(endPageNumber, lastPageNumber);
+
         int prevPageNumber = startPageNumber - 10;
         int nextPageNumber = endPageNumber + 1;
+
         // 처음 페이지
         pageInfo.put("startPageNumber", startPageNumber);
         // 현재 페이지
@@ -71,7 +73,7 @@ public class BoardService {
 
         int from = (page - 1) * 10;
 
-        map.put("boardList", mapper.selectAll(from));
+        map.put("boardList", mapper.selectAll(from, "%" + keyword + "%"));
         map.put("pageInfo", pageInfo);
 
         return map;

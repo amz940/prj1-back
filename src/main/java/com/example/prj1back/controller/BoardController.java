@@ -42,9 +42,12 @@ public class BoardController {
 
     // /api/board/list?p=?
     // p = 현재 페이지, default는 기초 페이지
+    // /api/board/list?k={keyword}
     @GetMapping("list")
-    public Map<String, Object> list(@RequestParam(value = "p", defaultValue = "1") Integer page) {
-        return service.list(page);
+    public Map<String, Object> list(@RequestParam(value = "p", defaultValue = "1") Integer page,
+                                    @RequestParam(value = "k", defaultValue = "") String keyword) {
+
+        return service.list(page, keyword);
     }
 
     @GetMapping("id/{id}")
