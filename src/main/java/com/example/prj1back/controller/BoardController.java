@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -20,8 +21,19 @@ public class BoardController {
     private final BoardService service;
 
     @PostMapping("add")
-    public ResponseEntity add(@RequestBody Board board,
+    // 파일까지 같이 반들려면 @RequestBody로는 안된다
+    // 파일을 안 보낼 수도 있으니까 파람에 디폴트 값 부여
+    // 여러 파일을 보낼땐 []가 저절로 붙기 때문에 밸류값에 부여
+    public ResponseEntity add(Board board,
+                              @RequestParam(value = "files[]",required = false) MultipartFile[] files,
                               @SessionAttribute(value = "login", required = false) Member login) {
+        if ( files != null){
+            for (int i = 0; i < files.length; i++) {
+                System.out.println("file = " + files[i].getOriginalFilename());
+                System.out.println("fileS = " + files[i].getSize());
+            }
+
+        }
 
         if (login == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
