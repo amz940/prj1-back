@@ -6,26 +6,25 @@ import java.time.Period;
 import java.time.temporal.ChronoUnit;
 
 public class AppUtil {
-    public static String getAgo(LocalDateTime inserted , LocalDateTime now){
+    public static String getAgo(LocalDateTime a, LocalDateTime b) {
 
-        if (inserted.isBefore(now.minusYears(1))){
-            Period between = Period.between(inserted.toLocalDate(), now.toLocalDate());
+        if (a.isBefore(b.minusYears(1))) {
+            Period between = Period.between(a.toLocalDate(), b.toLocalDate());
             return between.get(ChronoUnit.YEARS) + "년 전";
-        } else if (inserted.isBefore(now.minusMonths(1))) {
-            Period between = Period.between(inserted.toLocalDate(), now.toLocalDate());
+        } else if (a.isBefore(b.minusMonths(1))) {
+            Period between = Period.between(a.toLocalDate(), b.toLocalDate());
             return between.get(ChronoUnit.MONTHS) + "달 전";
-        } else if (inserted.isBefore(now.minusDays(1))) {
-            Period between = Period.between(inserted.toLocalDate(), now.toLocalDate());
+        } else if (a.isBefore(b.minusDays(1))) {
+            Period between = Period.between(a.toLocalDate(), b.toLocalDate());
             return between.get(ChronoUnit.DAYS) + "일 전";
-        } else if (inserted.isBefore(now.minusHours(1))) {
-            Duration between = Duration.between(inserted.toLocalDate(), now.toLocalDate());
+        } else if (a.isBefore(b.minusHours(1))) {
+            Duration between = Duration.between(a, b);
             return (between.getSeconds() / 60 / 60) + "시간 전";
-        } else if (inserted.isBefore(now.minusMinutes(1))) {
-            Duration between = Duration.between(inserted, now);
+        } else if (a.isBefore(b.minusMinutes(1))) {
+            Duration between = Duration.between(a, b);
             return (between.getSeconds() / 60) + "분 전";
-        }
-        else {
-            Duration between = Duration.between(inserted,now);
+        } else {
+            Duration between = Duration.between(a, b);
             return between.getSeconds() + "초 전";
         }
     }
