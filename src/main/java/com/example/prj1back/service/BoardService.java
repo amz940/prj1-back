@@ -7,9 +7,14 @@ import com.example.prj1back.mapper.CommentMapper;
 import com.example.prj1back.mapper.FileMapper;
 import com.example.prj1back.mapper.LikeMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.multipart.MultipartFile;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,13 +23,17 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(rollbackFor = Exception.class )
+@Transactional(rollbackFor = Exception.class)
 public class BoardService {
 
     private final CommentMapper commentMapper;
     private final LikeMapper likeMapper;
     private final BoardMapper mapper;
     private final FileMapper fileMapper;
+    private final S3Client s3;
+
+    @Value("${aw3.s3.bucket.name}")
+    private String bucket;
 
     public boolean save(Board board, MultipartFile[] files, Member login) throws IOException {
         // 로그인한 사용자의 이름을 작성자로 바꾸는 코드
@@ -33,7 +42,7 @@ public class BoardService {
         int cnt = mapper.insert(board);
 
         // boardFile 테이블에 files 정보 저장 코드
-        if (files != null){
+        if (files != null) {
             for (int i = 0; i < files.length; i++) {
                 // 특정 파일 정보(boardId, name)만 입력
                 fileMapper.insert(board.getId(), files[i].getOriginalFilename());
@@ -42,35 +51,48 @@ public class BoardService {
                 // 실제 파일을 S3 bucket에 upload 하는 코드
             }
         }
-        return cnt == 1 ;
+        return cnt == 1;
     }
 
     private void upload(Integer boardId, MultipartFile file) throws IOException {
         // 파일 저장 경로
-        // C: \Temp\prj1\게시물번호\파일명
-            File folder = new File("C:\\Temp\\prj1" + boardId);
-            if (!folder.exists()) {
-                folder.mkdirs();
-            }
+        // aws에 저장하는 방법
+        String key = "prj14086/" + boardId + file.getOriginalFilename();
+        PutObjectRequest objectRequest = PutObjectRequest.builder()
+                .bucket(bucket)
+                .key(key)
+                .acl(ObjectCannedACL.PUBLIC_READ)
+                .build();
 
-            String path = folder.getAbsolutePath() + "\\" + file.getOriginalFilename();
 
-            File des = new File(path);
+        s3.putObject(objectRequest, RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
 
-            file.transferTo(des);
+
+//         local에 저장하는 방법
+//         C: \Temp\prj1\게시물번호\파일명
+//            File folder = new File("C:\\Temp\\prj1" + boardId);
+//            if (!folder.exists()) {
+//                folder.mkdirs();
+//            }
+//
+//            String path = folder.getAbsolutePath() + "\\" + file.getOriginalFilename();
+//
+//            File des = new File(path);
+//
+//            file.transferTo(des);
     }
 
 
     public boolean validate(Board board) {
-        if ( board == null){
+        if (board == null) {
             return false;
         }
 
-        if (board.getContent() == null || board.getContent().isBlank()){
+        if (board.getContent() == null || board.getContent().isBlank()) {
             return false;
         }
 
-        if (board.getTitle() == null || board.getTitle().isBlank()){
+        if (board.getTitle() == null || board.getTitle().isBlank()) {
             return false;
         }
 
@@ -82,7 +104,7 @@ public class BoardService {
         Map<String, Object> pageInfo = new HashMap<>();
 
 //        int countAll = mapper.countAll();
-        int countAll = mapper.countAll("%"+ keyword + "%");
+        int countAll = mapper.countAll("%" + keyword + "%");
 
         int lastPageNumber = (countAll - 1) / 10 + 1;
         int startPageNumber = (page - 1) / 10 * 10 + 1;
@@ -121,23 +143,23 @@ public class BoardService {
 
     public boolean remove(Integer id) {
         // 1. 게시물에 달린 댓글들 지우기
-            commentMapper.deleteByBoardId(id);
+        commentMapper.deleteByBoardId(id);
         // 2. 좋아요 테이블 지우기
-            likeMapper.deleteByBoardId(id);
+        likeMapper.deleteByBoardId(id);
 
-        return mapper.deleteById(id) == 1 ;
+        return mapper.deleteById(id) == 1;
     }
 
     public boolean update(Board board) {
         return mapper.update(board) == 1;
     }
 
-    public boolean hasAccess(Integer id, Member login){
+    public boolean hasAccess(Integer id, Member login) {
         if (login == null) {
             return false;
         }
 
-        if (login.isAdmin()){
+        if (login.isAdmin()) {
             return true;
         }
 
