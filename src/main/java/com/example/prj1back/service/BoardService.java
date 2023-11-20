@@ -8,14 +8,17 @@ import com.example.prj1back.mapper.FileMapper;
 import com.example.prj1back.mapper.LikeMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(rollbackFor = Exception.class )
 public class BoardService {
 
     private final CommentMapper commentMapper;
@@ -23,7 +26,7 @@ public class BoardService {
     private final BoardMapper mapper;
     private final FileMapper fileMapper;
 
-    public boolean save(Board board, MultipartFile[] files, Member login) {
+    public boolean save(Board board, MultipartFile[] files, Member login) throws IOException {
         // 로그인한 사용자의 이름을 작성자로 바꾸는 코드
         board.setWriter(login.getId());
 
@@ -42,12 +45,11 @@ public class BoardService {
         return cnt == 1 ;
     }
 
-    private void upload(Integer boardId, MultipartFile file) {
+    private void upload(Integer boardId, MultipartFile file) throws IOException {
         // 파일 저장 경로
         // C: \Temp\prj1\게시물번호\파일명
-        try {
             File folder = new File("C:\\Temp\\prj1" + boardId);
-            if( !folder.exists()){
+            if (!folder.exists()) {
                 folder.mkdirs();
             }
 
@@ -56,11 +58,6 @@ public class BoardService {
             File des = new File(path);
 
             file.transferTo(des);
-
-
-        } catch (Exception e){
-            e.printStackTrace();
-        }
     }
 
 

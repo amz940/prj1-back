@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -26,7 +27,8 @@ public class BoardController {
     // 여러 파일을 보낼땐 []가 저절로 붙기 때문에 밸류값에 부여
     public ResponseEntity add(Board board,
                               @RequestParam(value = "files[]",required = false) MultipartFile[] files,
-                              @SessionAttribute(value = "login", required = false) Member login) {
+                              @SessionAttribute(value = "login", required = false) Member login)
+                              throws IOException {
 
         if (login == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
