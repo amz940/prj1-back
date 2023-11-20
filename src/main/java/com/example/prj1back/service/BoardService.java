@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,12 +34,33 @@ public class BoardService {
             for (int i = 0; i < files.length; i++) {
                 // 특정 파일 정보(boardId, name)만 입력
                 fileMapper.insert(board.getId(), files[i].getOriginalFilename());
+                // local에 저장
+                upload(files[i]);
+                // 실제 파일을 S3 bucket에 upload 하는 코드
             }
         }
-
-        // 실제 파일을 S3 bucket에 upload 하는 코드
-
         return cnt == 1 ;
+    }
+
+    private void upload(Integer boardId, MultipartFile file) {
+        // 파일 저장 경로
+        // C: \Temp\prj1\게시물번호\파일명
+        try {
+            File folder = new File("C:\\Temp\\prj1" + boardId);
+            if( !folder.exists()){
+                folder.mkdirs();
+            }
+
+            String path = folder.getAbsolutePath() + "\\" + file.getOriginalFilename();
+
+            File des = new File(path);
+
+            file.transferTo(des);
+
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
 
