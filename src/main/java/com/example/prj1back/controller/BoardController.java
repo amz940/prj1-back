@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import software.amazon.awssdk.services.s3.endpoints.internal.Value;
 
 import java.io.IOException;
 import java.util.List;
@@ -81,8 +82,15 @@ public class BoardController {
     }
 
     @PutMapping("edit")
-    public ResponseEntity edit(@RequestBody Board board,
-                               @SessionAttribute(value = "login", required = false) Member login) {
+    public ResponseEntity edit(Board board,
+                               @RequestParam(value = "removeFileIds[]", required = false) List<Integer> removeFileIds,
+                               @RequestParam(value = "uploadFiles[]", required = false) MultipartFile[] uploadFiles,
+                                @SessionAttribute(value = "login", required = false) Member login) {
+
+        System.out.println("board = " + board);
+        System.out.println("removeFileIds = " + removeFileIds);
+        System.out.println("uploadFiles = " + uploadFiles);
+
         if (login == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
