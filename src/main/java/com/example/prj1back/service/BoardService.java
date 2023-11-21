@@ -147,7 +147,7 @@ public class BoardService {
 
         List<BoardFile> boardFiles = fileMapper.selectNamesByBoardId(id);
 
-        for (BoardFile boardFile : boardFiles){
+        for (BoardFile boardFile : boardFiles) {
             String url = urlPrefix + "prj14086/" + id + "/" + boardFile.getName();
             boardFile.setUrl(url);
         }
@@ -186,7 +186,34 @@ public class BoardService {
         }
     }
 
-    public boolean update(Board board) {
+    public boolean update(Board board, List<Integer> removeFileIds, MultipartFile[] uploadFiles) throws IOException {
+        // 파일 지우기
+        // s3에서 지우고
+        if (removeFileIds != null) {
+            for (Integer id : removeFileIds){
+                BoardFile file = fileMapper.selectById(id);
+                String key = "prj14086" + board.getId() + "/" + file.getName();
+                DeleteObjectRequest objectRequest = DeleteObjectRequest.builder()
+                        .bucket(bucket)
+                        .key(key)
+                        .build();
+                s3.deleteObject(objectRequest);
+
+                // db에서도 지우기
+                fileMapper.deleteById(id);
+            }
+        }
+        // 파일 추가하기
+        if ( uploadFiles != null) {
+            // s3에 올리고
+            for (MultipartFile file : uploadFiles) {
+                upload(board.getId(), file);
+                // db에서도 추가
+                fileMapper.insert(board.getId(), file.getOriginalFilename());
+            }
+        }
+
+
         return mapper.update(board) == 1;
     }
 
