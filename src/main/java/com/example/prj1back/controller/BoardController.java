@@ -26,7 +26,7 @@ public class BoardController {
     // 파일을 안 보낼 수도 있으니까 파람에 디폴트 값 부여
     // 여러 파일을 보낼땐 []가 저절로 붙기 때문에 밸류값에 부여
     public ResponseEntity add(Board board,
-                              @RequestParam(value = "files[]",required = false) MultipartFile[] files,
+                              @RequestParam(value = "uploadFiles[]",required = false) MultipartFile[] files,
                               @SessionAttribute(value = "login", required = false) Member login)
                               throws IOException {
 
