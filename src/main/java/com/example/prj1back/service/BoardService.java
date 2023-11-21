@@ -161,6 +161,8 @@ public class BoardService {
         commentMapper.deleteByBoardId(id);
         // 2. 좋아요 테이블 지우기
         likeMapper.deleteByBoardId(id);
+        // 3. 파일 레코드 지우기
+        fileMapper.deleteByBoardId(id);
 
         return mapper.deleteById(id) == 1;
     }
