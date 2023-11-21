@@ -53,9 +53,10 @@ public class BoardController {
     // /api/board/list?k={keyword}
     @GetMapping("list")
     public Map<String, Object> list(@RequestParam(value = "p", defaultValue = "1") Integer page,
-                                    @RequestParam(value = "k", defaultValue = "") String keyword) {
+                                    @RequestParam(value = "k", defaultValue = "") String keyword,
+                                    @RequestParam(value = "c", defaultValue = "all") String category) {
 
-        return service.list(page, keyword);
+        return service.list(page, keyword, category);
     }
 
     @GetMapping("id/{id}")
@@ -85,7 +86,7 @@ public class BoardController {
     public ResponseEntity edit(Board board,
                                @RequestParam(value = "removeFileIds[]", required = false) List<Integer> removeFileIds,
                                @RequestParam(value = "uploadFiles[]", required = false) MultipartFile[] uploadFiles,
-                                @SessionAttribute(value = "login", required = false) Member login) throws IOException {
+                               @SessionAttribute(value = "login", required = false) Member login) throws IOException {
 
         if (login == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
