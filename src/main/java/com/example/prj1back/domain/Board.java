@@ -18,8 +18,9 @@ public class Board {
     private String nickName;
     private Integer countComment;
     private Integer countLike;
+    private Integer countFile;
     private LocalDateTime inserted;
-    
+
     private List<BoardFile> files;
 
     public String getAgo(){
